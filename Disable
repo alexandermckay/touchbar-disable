@@ -1,0 +1,10 @@
+#!/bin/bash
+
+defaults write com.apple.touchbar.agent PresentationModeGlobal -string fullControlStrip
+
+launchctl unload /System/Library/LaunchAgents/com.apple.controlstrip.plist
+launchctl unload /System/Library/LaunchAgents/com.apple.touchbar.agent.plist
+launchctl unload /System/Library/LaunchDaemons/com.apple.touchbar.user-device.plist
+pkill "ControlStrip"
+pkill "Touch Bar agent"
+pkill Dock

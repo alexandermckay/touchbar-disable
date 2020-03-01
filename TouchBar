@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function enableTouchBar() {
+
+	local presentationModeProperties="<dict><key>app</key><string>fullControlStrip</string><key>appWithControlStrip</key><string>fullControlStrip</string><key>fullControlStrip</key><string>app</string></dict>"
+
+	defaults delete com.apple.touchbar.agent PresentationModeGlobal
+	defaults write com.apple.touchbar.agent PresentationModeFnModes $presentationModeProperties
+	
+	launchctl load /System/Library/LaunchAgents/com.apple.controlstrip.plist
+	launchctl load /System/Library/LaunchAgents/com.apple.touchbar.agent.plist
+	launchctl load /System/Library/LaunchDaemons/com.apple.touchbar.user-device.plist
+	pkill "ControlStrip"
+	pkill "Touch Bar agent"
+	pkill Dock
+}
+
+function disableTouchBar() {
+	
+	defaults write com.apple.touchbar.agent PresentationModeGlobal -string fullControlStrip
+
+	launchctl unload /System/Library/LaunchAgents/com.apple.controlstrip.plist
+	launchctl unload /System/Library/LaunchAgents/com.apple.touchbar.agent.plist
+	launchctl unload /System/Library/LaunchDaemons/com.apple.touchbar.user-device.plist
+	pkill "ControlStrip"
+	pkill "Touch Bar agent"
+	pkill Dock
+}
+
+{
+	if [ "$1" == "enable" ]; then
+		enableTouchBar
+	elif [ "$1" == "disable" ]; then
+		disableTouchBar
+	else
+		printf "\\nUsage:\\n\\tTouchBar enable\\n\\tTouchBar disable\\n\\n"
+	fi
+}
